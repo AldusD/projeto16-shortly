@@ -18,4 +18,20 @@ const createShorten = async (req, res, next) => {
     }
 }
 
-export { createShorten };
+const getShortenById = async(req, res) => {
+    const shortenId = req.params.id;
+
+    try {
+        const shorten = await repository.selectShortenById(shortenId);
+        if(shorten.rowCount === 0) return res.sendStatus(STATUS.NOT_FOUND);
+
+        const { id, shortUrl, url} = shorten.rows[0];
+        return res.status(STATUS.OK).send({ id, shortUrl, url});
+
+    } catch (error) {
+        console.log(error);
+        return res.sendStatus(STATUS.SERVER_ERROR);
+    }
+}
+
+export { createShorten, getShortenById };
