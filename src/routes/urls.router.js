@@ -1,9 +1,9 @@
 import express from "express";
 
 import * as middleware from "../middlewares/urls.middleware.js";
-
+import * as controller from "../controllers/urls.controller.js";
 const router = express.Router();
 
-router.post("/urls/shorten", middleware.verifyConnection, middleware.verifyUrl, (req, res) => {return res.status(501).send(res.locals.user)} );
+router.post("/urls/shorten", middleware.verifyConnection, middleware.verifyUrl, controller.createShorten);
 
 export default router;
