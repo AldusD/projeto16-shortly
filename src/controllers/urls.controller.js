@@ -34,4 +34,24 @@ const getShortenById = async(req, res) => {
     }
 }
 
-export { createShorten, getShortenById };
+const openShorten = async (req, res) => {
+    const { shortUrl } = req.params;
+
+    try {
+        // get shorten
+        const shorten = await repository.selectShortenByShort(shortUrl);
+        if(shorten.rowCount === 0) return res.sendStatus(STATUS.NOT_FOUND);
+        
+        // adds new visit and redirects with status code 302; 
+        const { id, url } = shorten.rows[0];
+        const visit = await repository.insertVisit(id);
+
+        res.redirect(url);
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(STATUS.SERVER_ERROR);
+    }
+}
+
+
+export { createShorten, getShortenById, openShorten };
