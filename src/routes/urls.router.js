@@ -7,5 +7,6 @@ const router = express.Router();
 router.post("/urls/shorten", middleware.verifyConnection, middleware.verifyUrl, controller.createShorten);
 router.get("/urls/:id", controller.getShortenById);
 router.get("/urls/open/:shortUrl", controller.openShorten);
+router.delete("/urls/:id",  middleware.verifyConnection, middleware.verifyShortenOwnership, controller.deleteShorten);
 
 export default router;

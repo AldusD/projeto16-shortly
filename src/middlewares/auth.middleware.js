@@ -10,7 +10,7 @@ import loginSchema from "../schemas/login.schema.js";
 const verifyNewUser = async (req, res, next) => {
     // checks if request body is correct
     const { name, password, confirmPassword } = req.body;
-    const email = req.body.email.toLowerCase();
+    const email = req.body.email?.toLowerCase();
     if(password != confirmPassword) return res.sendStatus(STATUS.UNPROCESSABLE_ENTITY);
 
     const isValid = registerSchema.validate({ name, email, password });
@@ -33,7 +33,7 @@ const verifyNewUser = async (req, res, next) => {
 const verifyUser = async (req, res, next) => {
     // checks if request body is correct
     const { password } = req.body;
-    const email = req.body.email.toLowerCase();
+    const email = req.body.email?.toLowerCase();
     
     const isValid = loginSchema.validate({ email, password });
     if(isValid.error) return res.status(STATUS.UNPROCESSABLE_ENTITY).send(isValid.error.message);

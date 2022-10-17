@@ -42,7 +42,7 @@ const openShorten = async (req, res) => {
         const shorten = await repository.selectShortenByShort(shortUrl);
         if(shorten.rowCount === 0) return res.sendStatus(STATUS.NOT_FOUND);
         
-        // adds new visit and redirects with status code 302; 
+        // adds new visit and redirects
         const { id, url } = shorten.rows[0];
         const visit = await repository.insertVisit(id);
 
@@ -53,5 +53,20 @@ const openShorten = async (req, res) => {
     }
 }
 
+const deleteShorten = async (req, res) => {
+    const { shortId } = res.locals;
+    
+    try {
+        const visitsDelete = await repository.deleteShortenVisits(shortId);
+        // is needed to delete the data that points to element that is going to be deleted
+        const shortenDelete = await repository.deleteShortenById(shortId);
 
-export { createShorten, getShortenById, openShorten };
+        return res.sendStatus(STATUS.NO_CONTENT);
+    } catch (error) {
+        console.log(error);
+        return res.sendStatus(STATUS.SERVER_ERROR);
+    }
+} 
+
+
+export { createShorten, getShortenById, openShorten, deleteShorten };

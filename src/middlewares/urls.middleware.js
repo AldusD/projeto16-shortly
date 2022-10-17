@@ -1,5 +1,5 @@
 import { compareToken } from "../token/token.jwt.js";
-
+import * as repository from "../repositories/urls.repository.js";
 import STATUS from "../enums/status.js";
 
 const verifyConnection = async (req, res, next) => {
@@ -31,4 +31,23 @@ const verifyUrl = async (req, res, next) => {
     next()
 }
 
-export { verifyConnection, verifyUrl };
+const verifyShortenOwnership = async (req, res, next) => {
+    const { userId } = res.locals.user;
+    const shortId = req.params.id;
+
+    try {
+        // checks if the shorten exists and his owner is the same as the token's
+        const shorten = await repository.selectShortenById(shortId);
+        if (shorten.rowCount === 0) return res.sendStatus(STATUS.NOT_FOUND);
+        if(shorten.rows[0].userId != userId) res.sendStatus(STATUS.UNAUTHORIZED);
+        
+    } catch (error) {
+        console.log(error);
+        return res.sendStatus(STATUS.SERVER_ERROR);
+    }
+
+    res.locals.shortId = shortId;
+    next();
+} 
+
+export { verifyConnection, verifyUrl, verifyShortenOwnership };

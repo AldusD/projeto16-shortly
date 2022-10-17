@@ -24,4 +24,15 @@ const insertVisit = async shortId => {
         INSERT INTO ${VISITS} ("shortId") VALUES ($1);`, [shortId]);
 }
 
-export { insertShorten, selectShortenById, selectShortenByShort, insertVisit };
+const deleteShortenVisits = async shortId => {
+    return await connection.query(`
+        DELETE FROM ${VISITS} WHERE "shortId" = $1`, [shortId]);
+}
+
+const deleteShortenById = async id => {
+    // this deletion happens only after shorten ownership validation
+    return await connection.query(`
+        DELETE FROM ${SHORTS} WHERE id = $1`, [id]);
+}
+
+export { insertShorten, selectShortenById, selectShortenByShort, insertVisit, deleteShortenVisits, deleteShortenById };
